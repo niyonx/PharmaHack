@@ -1,0 +1,61 @@
+##################################################################################################################
+#compound_set1.sdf 
+#Conversion into SMILES for convenience (Babel 3.3, OpenEye Scientific Software, Inc.)
+
+babel -i compound_set1.sdf -o compound_set1.smi
+
+#Conversion into RDKit topological fingerprints (as base64-encoded csv file) via trivial python snippet
+./miniconda3/bin/python ./sdf_to_fp.py data/compound_set1.sdf > data/compound_set1.csv
+
+#Conversion into RDKit topological fingerprints (as FPS finterprint format) via ChemFP helper script 
+#See https://jcheminf.biomedcentral.com/track/pdf/10.1186/1758-2946-5-S1-P36 or http://chemfp.com/ for reference
+//apps/prod/ccfw/fs/rdkit2fps compound_set1.sdf > compound_set1.fps
+
+
+
+#################################################################################################################
+#compound_set2.sdf
+#Conversion into SMILES for convenience (Babel 3.3, OpenEye Scientific Software, Inc.)
+
+babel -i compound_set2.sdf -o compound_set2.smi
+
+#Conversion into 3D structures for descriptor calculation using Corina 4.2.0 (Molecular Networks GmbH)
+#corina -t n -d wh,rs -i t=sdf compound_set2.sdf -o t=sdf compound_set2_3d.sdf 
+
+#Calculation of molecular descriptors using mordred, see https://github.com/mordred-descriptor/mordred for 
+#reference (based on 3D structures)
+#./miniconda3/bin/python -m mordred -v data/compound_set2_3d.sdf -o data/compound_set2_3d.csv
+
+#Calculation of molecular descriptors using mordred, see https://github.com/mordred-descriptor/mordred for
+#reference (based on 2D structures)
+./miniconda3/bin/python -m mordred -v data/compound_set2.sdf -o data/compound_set2.csv
+
+
+
+################################################################################################################
+#compound_set3.sdf
+#Conversion into SMILES for convenience (Babel 3.3, OpenEye Scientific Software, Inc.)
+
+babel -i compound_set3.sdf -o compound_set3.smi
+
+#Conversion into InChIKeys (as CSV file format), see https://www.inchi-trust.org/ for reference
+./miniconda3/bin/python sdf_to_inchikey.py data/compound_set3.sdf
+
+
+
+##############################################################################################################
+#Evaluation
+
+#The respective .sdf and .smi files should be kept "secret" for the participants since their (partial) 
+#recovery is their challenge. The respective descriptor files should serve as input for participant.
+
+#These structures should not be known in the public domain (with very few exceptions), thus using a simple
+#lookup service based on e.g. INCHIKEY will not be a successful strategy.
+
+#The three types of descriptors ar in ascending order of difficulty. Recovering a structure from a fingerprint
+#should be possible to some extend, reconstruction from InChIKeys will be almost impossible (since it involves
+#a cryptographic hash function)
+
+#Given a proposal by a participant, I would suggest to calculate InChIKeys as shown above and check for an
+#exact match. 
+#
